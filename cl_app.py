@@ -65,9 +65,12 @@ def read_data(path: str = 'data/Spotify_Youtube.csv'):
                 songs.append(line)
     return songs, header
 
+def get_shape(songs: []):
+    return len(songs), len(songs[0])
 
 if __name__ == "__main__":
     songs, header = read_data()
-    for song in songs:
-        print(song)
-    print(len(songs))
+    print(get_shape(songs))
+    # for song in songs:
+    #     print(song)
+    # print(len(songs))
