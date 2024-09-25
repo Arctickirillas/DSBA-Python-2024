@@ -3,27 +3,26 @@ from xxsubtype import bench
 
 import pandas as pd
 
+
 class Song:
     def __init__(self, row: pd.Series):
         self.title = row.Title
         self.artist = row.Artist
         self.likes = row.Likes
 
-        self.Danceability = row.Danceability
-        self.Energy = row.Energy
-        self.Loudness = row.Loudness
-        self.Speechiness = row.Speechiness
-        self.Acousticness = row.Acousticness
-        self.Instrumentalness = row.Instrumentalness
+        self.musicality = row[['Danceability', 'Energy', 'Key', 'Loudness', 'Speechiness',
+        'Acousticness', 'Instrumentalness', 'Liveness', 'Valence', 'Tempo']]
 
     def __repr__(self):
         return f"|{self.title} by {self.artist} with {self.likes} likes|"
 
+
 class Database:
     def __init__(self, path: str = 'data/Spotify_Youtube.csv'):
         df = pd.read_csv(path, index_col=0)
+        df.dropna(subset=['Danceability', 'Energy', 'Key', 'Loudness', 'Speechiness', 'Acousticness',
+                          'Instrumentalness', 'Liveness', 'Valence', 'Tempo'], inplace=True)
         self.db = {}
-        self.musicality_index = (df.columns.tolist().index("Danceability"), df.columns.tolist().index("Duration_ms"))
         self.shape = df.shape
         for index, row in df.iterrows():
             self.add_song(row)
@@ -44,9 +43,17 @@ class Database:
         return self.shape
 
     def find_similar_songs(self, song: str):
+        result = []
         for element in sum(self.db.values(), []):
-            if not isinstance(element.title, float) and song in element.title:
-                print(element)
+            if not isinstance(element.title, float) and song.lower() in element.title.lower():
+                result.append(element)
+        for i, element in (enumerate(result)):
+            print(f"({i})", element)
+        index = int(input("Choose a song you prefer\n"))
+        return result[index]
+
+
+
     # TODO: return the closest song by search and then find similar by musicality
 songs = []
 LAST_INDEX = 24
@@ -76,7 +83,7 @@ DB = Database()
 # print(DB.search("SICK LEGEND"))
 # print(DB.get_shape())
 # DB.display()
-DB.find_similar_songs("Feel Good")
+print(DB.find_similar_songs("feel good"))
 
 # if __name__ == "__main__":
     # parser = argparse.ArgumentParser()
