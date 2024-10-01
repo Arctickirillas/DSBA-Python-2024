@@ -1,5 +1,6 @@
 import requests
 from bs4 import BeautifulSoup as bs
+from tqdm import tqdm
 
 
 URL = "https://www.last.fm/music/{}"
@@ -56,5 +57,20 @@ def parse_artist_bio(artist: str):
     return bio
 
 
-artist = input()
-print(parse_artist_bio(artist)[0])
+artists = [
+    "Gorillaz", 
+    "BTS",
+    "Eminem",
+    "2Pac",
+    "Drake",
+    "Migos",
+    "Offset",
+    "Quavo"
+]
+
+for artist in tqdm(artists):
+    print(artist)
+    print(parse_genre_by_artist(artist))
+    print(parse_similar_artists(artist))
+    print(parse_artist_bio(artist))
+    print('|-------------------------------------------------------------|')
